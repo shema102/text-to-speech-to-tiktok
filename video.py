@@ -17,7 +17,16 @@ def get_video_width_height(input_file: str):
     return width, height
 
 
-def crop_video_to_9_by_16(video_path: str, output_path: str, start: int, duration: int):
+def get_media_length(input_file: str):
+    """
+    Gets the length of the media
+    :param input_file: input file
+    :return: length in seconds
+    """
+    return float(ffmpeg.probe(input_file)['streams'][0]['duration'])
+
+
+def crop_video(video_path: str, output_path: str, start: int, duration: int, aspect_ratio: float = 9/16):
     """
     Crops the video to a 9 by 16 aspect ratio
     :param video_path: path to the video
@@ -29,8 +38,8 @@ def crop_video_to_9_by_16(video_path: str, output_path: str, start: int, duratio
 
     width, height = get_video_width_height(video_path)
 
-    new_height = int(width * 9/16)
-    new_width = int(height * 9/16)
+    new_height = int(width * aspect_ratio)
+    new_width = int(height * aspect_ratio)
 
     start = seconds_to_duration(start)
     duration = seconds_to_duration(duration)
@@ -39,12 +48,68 @@ def crop_video_to_9_by_16(video_path: str, output_path: str, start: int, duratio
         width/2 - new_width/2, 0, new_width, new_height).output(output_path).run()
 
 
-def remove_audio(input_file: str, output_file: str):
+def cut_video(input_file: str, output_file: str, start: int, duration: int):
     """
-    Removes the audio from the video
+    Cuts a video
     :param input_file: input file
+    :param output_file: output file
+    :param start: start time in seconds
+    :param duration: duration in seconds
+    :return:
+    """
+    start = seconds_to_duration(start)
+    duration = seconds_to_duration(duration)
+
+    ffmpeg.input(input_file, ss=start, t=duration).output(output_file).run()
+
+
+def add_audio_to_video(input_file: str, output_file: str, audio_file: str):
+    """
+    Adds audio to a video
+    :param input_file: input file
+    :param output_file: output file
+    :param audio_file: audio file
+    :return:
+    """
+    video = ffmpeg.input(input_file)
+    audio = ffmpeg.input(audio_file)
+
+    ffmpeg.concat(video, audio, v=1, a=1).output(output_file).run()
+
+
+def concat_videos(input_files: list, output_file: str):
+    """
+    Concatenates videos
+    :param input_files: list of input files
     :param output_file: output file
     :return:
     """
-    ffmpeg.input(input_file).output(
-        output_file, a='-').run()
+    inputs = [ffmpeg.input(input) for input in input_files]
+    ffmpeg.concat(*inputs, n=len(inputs)).output(output_file).run()
+
+
+def concat_audios(input_files: list, output_file: str):
+    """
+    Concatenates videos
+    :param input_files: list of input files
+    :param output_file: output file
+    :return:
+    """
+    inputs = [ffmpeg.input(input) for input in input_files]
+    ffmpeg.concat(*inputs, v=0, a=1, n=len(inputs)).output(output_file).run()
+
+
+def overlay_image_over_video(input_file: str, output_file: str, image_path: str, x: int, y: int):
+    """
+    Overlays an image over a video
+    :param input_file: input file
+    :param output_file: output file
+    :param image_path: path to the image
+    :param x: x position
+    :param y: y position
+    :return:
+    """
+    video = ffmpeg.input(input_file)
+    image = ffmpeg.input(image_path)
+
+    video.overlay(image, x=x, y=y).output(output_file).run()
