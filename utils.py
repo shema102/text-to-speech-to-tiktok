@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 def create_output_folders_if_not_exist():
@@ -13,6 +14,14 @@ def create_output_folders_if_not_exist():
 
     if not os.path.exists('output/video'):
         os.makedirs('output/video')
+
+
+def cleanup():
+    """
+    Cleans up the output folder
+    """
+    shutil.rmtree('output/audio', ignore_errors=True)
+    shutil.rmtree('output/video', ignore_errors=True)
 
 
 def seconds_to_duration(seconds: int):

@@ -1,7 +1,7 @@
 import json
 import math
 from tts import create_audio_from_text
-from utils import create_output_folders_if_not_exist
+from utils import cleanup, create_output_folders_if_not_exist
 
 from video import add_audio_to_video, concat_audios, concat_videos, crop_video, cut_video, get_media_length, overlay_image_over_video
 
@@ -34,9 +34,9 @@ if __name__ == '__main__':
 
         create_audio_from_text(text, audio_file_name)
 
-        medias.append({"video": video_file_name,
-                       "length": math.ceil(get_media_length(audio_file_name)),
-                       "screenshot": fragment['screenshot']})
+        medias.append({
+            "length": math.ceil(get_media_length(audio_file_name)),
+            "screenshot": fragment['screenshot']})
 
         audio_fragments.append(audio_file_name)
 
@@ -53,17 +53,19 @@ if __name__ == '__main__':
     for i, media in enumerate(medias):
         duration = media['length']
 
+        cut_video_name = f'output/video/{i}_c.mp4'
+
         cut_video('output/video/cropped.mp4',
-                  media['video'], offset, duration)
+                  cut_video_name, offset, duration)
 
         offset += duration
 
         screenshot_file = f'input/screenshots/{media["screenshot"]}'
 
-        video_overlay_file = f'output/video/{i}_overlay.mp4'
+        video_overlay_file = f'output/video/{i}_o.mp4'
 
         overlay_image_over_video(
-            media['video'], video_overlay_file, screenshot_file, 0, 0)
+            cut_video_name, video_overlay_file, screenshot_file, 0, 0)
 
         video_fragments.append(video_overlay_file)
 
@@ -72,3 +74,5 @@ if __name__ == '__main__':
 
     add_audio_to_video('output/video/output.mp4',
                        'output/output.mp4', 'output/audio/output.mp3')
+
+    cleanup()
