@@ -1,6 +1,9 @@
 from gtts import gTTS
 
 
-def createAudioFromText(text: str, outputFileName: str):
+def create_audio_from_text(text: str, output_file: str):
+    """
+    Creates an audio file from text
+    """
     tts = gTTS(text=text)
-    tts.save(outputFileName)
+    tts.save(output_file)

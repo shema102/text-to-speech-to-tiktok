@@ -26,3 +26,10 @@ pip-delete-this-directory.txt
 
 #outputs
 output/
+
+#inputs
+input/screenshots/*
+!input/screenshots/.keep
+
+input/video/*
+!input/video/.keep
