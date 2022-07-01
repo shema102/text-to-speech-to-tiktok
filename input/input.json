@@ -1,5 +1,4 @@
 {
-  "title": "What's something you can bring up right now to unlock some childhood nostalgia for the rest of us?",
   "fragments": [
     {
       "screenshot": "screenshot_1.png",
@@ -9,6 +8,5 @@
       "screenshot": "screenshot_2.png",
       "text": "Remember the warm, fuzzy static left on your tv screen after it was on for a while.  Movies and video games on channel 3.  Edit- so many people commenting on the smell of the static. Is that the smell of ozone?  Edit 2- lot of comments here remembering how the picture would collapse down to a single point of light when you turned the tv off. I forgot about that.  Edit 3- lot of you crazy kids WEAPONIZED the static to shock your siblings!"
     }
-  ],
-  "delaySeconds": 5
+  ]
 }
