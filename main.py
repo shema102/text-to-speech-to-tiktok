@@ -5,16 +5,12 @@ from utils import cleanup, create_output_folders_if_not_exist
 
 from video import add_audio_to_video, concat_audios, concat_videos, crop_video, cut_video, get_media_length, overlay_image_over_video
 
+
+SCREENSHOT_POSITION_V_PERCENTAGE = 0.5
+SCREENSHOT_PADDING_H = 16
+
 if __name__ == '__main__':
     create_output_folders_if_not_exist()
-
-    # 1. convert text to speech
-    # 2. add all audio durations plus delay after each
-    # 3. cut video to the total length
-    # 4. for each audio fragment cut video
-    # 5. overlay comment to each video fragment
-    # 6. overlay audio fragment on video
-    # 7. glue all videos together
 
     fragments = []
     medias = []
@@ -65,7 +61,7 @@ if __name__ == '__main__':
         video_overlay_file = f'output/video/{i}_o.mp4'
 
         overlay_image_over_video(
-            cut_video_name, video_overlay_file, screenshot_file, 0, 0)
+            cut_video_name, video_overlay_file, screenshot_file, SCREENSHOT_POSITION_V_PERCENTAGE, padding_h=SCREENSHOT_PADDING_H)
 
         video_fragments.append(video_overlay_file)
 

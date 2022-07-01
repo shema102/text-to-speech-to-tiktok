@@ -99,17 +99,29 @@ def concat_audios(input_files: list, output_file: str):
     ffmpeg.concat(*inputs, v=0, a=1, n=len(inputs)).output(output_file).run()
 
 
-def overlay_image_over_video(input_file: str, output_file: str, image_path: str, x: int, y: int):
+def overlay_image_over_video(input_file: str, output_file: str, image_path: str, y_percentage: int, padding_h: int = 0):
     """
     Overlays an image over a video
     :param input_file: input file
     :param output_file: output file
     :param image_path: path to the image
-    :param x: x position
-    :param y: y position
+    :param y_percentage: y position percentage
     :return:
     """
     video = ffmpeg.input(input_file)
     image = ffmpeg.input(image_path)
 
-    video.overlay(image, x=x, y=y).output(output_file).run()
+    video_width, video_height = get_video_width_height(input_file)
+    image_width, image_height = get_video_width_height(image_path)
+
+    image_aspect_ratio = image_width / image_height
+
+    new_image_width = int(video_width - 2 * padding_h)
+    new_image_height = int(new_image_width * 1 / image_aspect_ratio)
+
+    x_position = int(padding_h)
+
+    y_position = int(y_percentage * video_height - new_image_height / 2)
+
+    video.overlay(image.filter('scale', new_image_width,
+                  new_image_height), x=x_position, y=y_position).output(output_file).run()
