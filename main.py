@@ -28,7 +28,7 @@ if __name__ == '__main__':
         audio_file_name = f'output/audio/{i}.mp3'
         video_file_name = f'output/video/{i}.mp4'
 
-        create_audio_from_text(text, audio_file_name)
+        create_audio_from_text(text.lower(), audio_file_name)
 
         medias.append({
             "length": math.ceil(get_media_length(audio_file_name)),
